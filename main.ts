@@ -89,7 +89,9 @@ function run(p, inp) {
 }
 const I = process.env.MAKEFUN_INPUT_DIR ?? '/input', O = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
 for (const id of readdirSync(I).sort()) {
-  const r = run(readFileSync(I + '/' + id + '/program.bin'), readFileSync(I + '/' + id + '/input.bin'));
+  let inp;
+  try { inp = readFileSync(I + '/' + id + '/input.bin'); } catch { inp = Buffer.alloc(0); }
+  const r = run(readFileSync(I + '/' + id + '/program.bin'), inp);
   mkdirSync(O + '/' + id, { recursive: true });
   writeFileSync(O + '/' + id + '/stdout.bin', r.out);
   writeFileSync(O + '/' + id + '/exit.txt', r.code + '\n');
